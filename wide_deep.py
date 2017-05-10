@@ -183,8 +183,8 @@ if(SUB):
     model_dir = tempfile.mkdtemp() if not model_dir else model_dir
 
     m = build_estimator(model_dir, model_type)
-    m.fit(input_fn=input_fn(df_train), steps=train_steps)
-    pred = m.predict_proba(input_fn=input_fn(df_test), as_iterable=False, steps=1)
+    m.fit(input_fn=lambda: input_fn(df_train), steps=train_steps)
+    pred = m.predict_proba(input_fn=lambda: input_fn(df_test), as_iterable=False, steps=1)
     pred = pred[:, 1]
 
     # 输出
@@ -197,7 +197,8 @@ else:
     df_test = pd.read_csv(directory+"test_div.csv")
     model_dir = tempfile.mkdtemp() if not model_dir else model_dir
     m = build_estimator(model_dir, model_type)
-    m.fit(input_fn=input_fn(df_train), steps=train_steps)
-    results = m.evaluate(input_fn=input_fn(df_test), as_iterable=False,step=1)
+    m.fit(input_fn=lambda: input_fn(df_train), steps=train_steps)
+    results = m.evaluate(input_fn=lambda: input_fn(df_test), as_iterable=False,step=1)
     for key in sorted(results):
         print("%s: %s" % (key, results[key]))
+
