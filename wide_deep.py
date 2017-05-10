@@ -183,10 +183,8 @@ if(SUB):
     model_dir = tempfile.mkdtemp() if not model_dir else model_dir
 
     m = build_estimator(model_dir, model_type)
-    x_train, y_train =input_fn(df_train)
-    m.fit(x=x_train,y=y_train, steps=train_steps, batch_size=256)
-    x_test, y_test=input_fn(df_test)
-    pred = m.predict_proba(x = x_test, y=y_test, as_iterable=False, batch_size=256)
+    m.fit(input_fn=input_fn(df_train), steps=train_steps)
+    pred = m.predict_proba(input_fn=input_fn(df_test), as_iterable=False, steps=1)
     pred = pred[:, 1]
 
     # 输出
@@ -197,14 +195,9 @@ else:
     print("use only 80% train data")
     df_train = pd.read_csv(directory+"train_div.csv")
     df_test = pd.read_csv(directory+"test_div.csv")
-    df_train = pd.read_csv(directory+"train_all.csv")
-    df_test = pd.read_csv(directory+"test_all.csv")
     model_dir = tempfile.mkdtemp() if not model_dir else model_dir
-
     m = build_estimator(model_dir, model_type)
-    x_train, y_train =input_fn(df_train)
-    m.fit(x=x_train,y=y_train, steps=train_steps, batch_size=256)
-    x_test, y_test=input_fn(df_test)
-    results = m.evaluate(x = x_test, y=y_test, as_iterable=False, batch_size=256)
+    m.fit(input_fn=input_fn(df_train), steps=train_steps)
+    results = m.evaluate(input_fn=input_fn(df_test), as_iterable=False,step=1)
     for key in sorted(results):
         print("%s: %s" % (key, results[key]))
